@@ -1,0 +1,1 @@
+import React from 'react'; export default function Referrals(){ return (<div className='card'><h2 className='text-xl font-bold'>Referrals</h2><p className='mt-2'>Your code: <span className='font-mono bg-gray-100 px-2'>REF-ABC123</span></p></div>) }

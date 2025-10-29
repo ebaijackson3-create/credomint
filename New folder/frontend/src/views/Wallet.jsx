@@ -1,0 +1,1 @@
+import React from 'react'; export default function Wallet(){ return (<div className='card'><h2 className='text-xl font-bold'>Wallet</h2><p className='mt-2'>Balance: <strong>50,000 CFA</strong></p></div>) }

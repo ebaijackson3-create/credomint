@@ -1,0 +1,133 @@
+generator client { provider = "prisma-client-js" }
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  id String @id @default(uuid())
+  email String @unique
+  passwordHash String
+  createdAt DateTime @default(now())
+  wallets Wallet[]
+  twoFactorMethods TwoFactorMethod[]
+  referrals Referral[]
+}
+
+model Wallet {
+  id String @id @default(uuid())
+  user User @relation(fields: [userId], references: [id])
+  userId String
+  currency String
+  availableBalanceBigint BigInt @default(0)
+  ledgerBalanceBigint BigInt @default(0)
+  ledgerEntries LedgerEntry[]
+}
+
+model LedgerEntry {
+  id String @id @default(uuid())
+  entryRef String
+  wallet Wallet @relation(fields: [walletId], references: [id])
+  walletId String
+  counterpartyWalletId String?
+  amountBigint BigInt
+  balanceAfter BigInt
+  entryType String
+  source String
+  metadata Json?
+  createdAt DateTime @default(now())
+}
+
+model Transaction {
+  id String @id @default(uuid())
+  externalId String? @unique
+  user User? @relation(fields: [userId], references: [id])
+  userId String?
+  wallet Wallet? @relation(fields: [walletId], references: [id])
+  walletId String?
+  amountBigint BigInt
+  currency String
+  status String
+  idempotencyKey String?
+  initiatedAt DateTime @default(now())
+  completedAt DateTime?
+  metadata Json?
+}
+
+model PaymentProviderEvent {
+  id String @id @default(uuid())
+  provider String
+  providerEventId String
+  payload Json
+  receivedAt DateTime @default(now())
+  processed Boolean @default(false)
+  @@unique([provider, providerEventId])
+}
+
+model AuditLog {
+  id String @id @default(uuid())
+  actor String?
+  action String
+  tableName String?
+  rowId String?
+  beforeState Json?
+  afterState Json?
+  createdAt DateTime @default(now())
+}
+
+model TwoFactorMethod {
+  id String @id @default(uuid())
+  user User @relation(fields: [userId], references: [id])
+  userId String
+  method String
+  secret String?
+  createdAt DateTime @default(now())
+  lastUsed DateTime?
+}
+
+model Group {
+  id String @id @default(uuid())
+  name String
+  description String?
+  creatorId String
+  creator User @relation(fields: [creatorId], references: [id])
+  members GroupMember[]
+  createdAt DateTime @default(now())
+}
+
+model GroupMember {
+  id String @id @default(uuid())
+  userId String
+  groupId String
+  role String @default("member")
+  user User @relation(fields: [userId], references: [id])
+  group Group @relation(fields: [groupId], references: [id])
+  joinedAt DateTime @default(now())
+}
+
+model Referral {
+  id String @id @default(uuid())
+  user User @relation(fields: [userId], references: [id])
+  userId String
+  code String @unique
+  createdAt DateTime @default(now())
+  bonuses ReferralBonus[]
+}
+
+model ReferralBonus {
+  id String @id @default(uuid())
+  referral Referral @relation(fields: [referralId], references: [id])
+  referralId String
+  userId String
+  amountBigint BigInt
+  createdAt DateTime @default(now())
+}
+
+model Listing {
+  id String @id @default(uuid())
+  title String
+  priceCents BigInt
+  sellerId String
+  createdAt DateTime @default(now())
+}

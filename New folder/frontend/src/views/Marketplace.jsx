@@ -1,0 +1,1 @@
+import React from 'react'; export default function Marketplace(){ return (<div className='card'><h2 className='text-xl font-bold'>Marketplace</h2><p className='mt-2'>Buy & sell services on the platform.</p></div>) }

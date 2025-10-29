@@ -1,0 +1,1 @@
+import React from 'react'; export default function Groups(){ return (<div className='card'><h2 className='text-xl font-bold'>Groups</h2><p className='mt-2'>Create or join groups to pool funds.</p></div>) }
