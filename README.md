@@ -1,2 +1,2 @@
 # credomint
-finace an creation of funds
+finace an creation of funds 
